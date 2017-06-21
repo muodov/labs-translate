@@ -44,7 +44,8 @@ def hello():
     word = request.args.get('word', '')
     src = request.args.get('src', '')
     dest = request.args.get('dest', '')
-    if ALLOWED_ORIGIN and request.headers.get('origin') != ALLOWED_ORIGIN:
+    origin = request.headers.get('origin')
+    if ALLOWED_ORIGIN and origin and not origin.endswith(ALLOWED_ORIGIN):
         abort(403)
     if not word:
         abort(400)
