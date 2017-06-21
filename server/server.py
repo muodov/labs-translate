@@ -47,6 +47,6 @@ def hello():
 @application.route('/<path:path>')
 def static_file(path):
     return send_from_directory(
-        os.path.join(os.path.dirname(__file__), '..', 'build'),
+        os.path.join(os.path.dirname(__file__), '..', 'root'),
         path
     )

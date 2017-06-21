@@ -5,14 +5,33 @@ $surfly-dark-blue: #123d57;
 $surfly-dark-red: #6e2222;
 $surfly-dark-yellow: #cbb054;
 
-$primary: $surfly-red;
+.overlay {
+    pointer-events: none;
+    z-index: 9999999;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
 
-@import "~bulma/sass/utilities/_all";
-// @import "~bulma/sass/base/_all";
-@import "~bulma/sass/elements/_all";
-// @import "sass/components/_all"
-// @import "sass/grid/_all"
-@import "~bulma/sass/layout/_all";
+.translate-button {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    background: url('/translate-icon.png');
+    cursor: pointer;
+}
+
+.translate-card {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(10, 10, 10, 0.1);
+    cursor: pointer;
+}
 
 .annotation-mark {
     background-color: $surfly-red;
@@ -22,24 +41,13 @@ $primary: $surfly-red;
 }
 
 .annotation-panel {
-    @import "~bulma/sass/base/_all";
-    @import "~bulma/sass/elements/_all";
-    // these are from bulma's rule for html
-    font-size: $body-size;
-    text-rendering: $render-mode;
-    // from bulma's rule for body:
-    font-family: $family-primary;
-    color: $text;
-    font-size: 1rem;
-    font-weight: $weight-normal;
-    line-height: 1.5;
     
     // custom code below
 
     z-index: 999999;
     overflow-y: auto;
     position: fixed;
-    background: $white;
+    background: white;
     height: 100%;
     width: 290px;
     right: 0;
