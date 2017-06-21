@@ -5,16 +5,6 @@ $surfly-dark-blue: #123d57;
 $surfly-dark-red: #6e2222;
 $surfly-dark-yellow: #cbb054;
 
-.overlay {
-    pointer-events: none;
-    z-index: 9999999;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-}
-
 .translate-button {
     position: fixed;
     width: 40px;
@@ -29,8 +19,61 @@ $surfly-dark-yellow: #cbb054;
     height: 100%;
     top: 0;
     left: 0;
-    background: rgba(10, 10, 10, 0.1);
-    cursor: pointer;
+    background: rgba(10, 10, 10, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999999;
+
+    .translate-card-content {
+        background: white;
+        border-radius: 6px;
+        padding: 10px;
+        width: 50%;
+        min-width: 300px;
+        max-height: 80%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+
+        .translate-header {
+
+        }
+
+        .translate-content {
+            max-height: 80%;
+            max-width: 100%;
+            overflow: auto;
+        }
+
+        .translate-close {
+            cursor: pointer;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 32px;
+            height: 32px;
+            opacity: 0.3;
+        }
+        .translate-close:hover {
+            opacity: 1;
+        }
+        .translate-close:before, .translate-close:after {
+            position: absolute;
+            left: 15px;
+            content: ' ';
+            height: 33px;
+            width: 2px;
+            background-color: #333;
+        }
+        .translate-close:before {
+            transform: rotate(45deg);
+        }
+        .translate-close:after {
+            transform: rotate(-45deg);
+        }
+
+    }
 }
 
 .annotation-mark {

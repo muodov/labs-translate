@@ -21,11 +21,16 @@ ALLOWED_ORIGIN = os.getenv('ALLOWED_ORIGIN')
 sentry.captureMessage('app started')
 
 
-@application.route("/")
+@application.route("/", methods=['GET', 'POST'])
 def hello():
-    word = request.args.get('word', '')
-    src = request.args.get('src')
-    dest = request.args.get('dest')
+    if request.method == 'POST':
+        word = request.get_json().get('word', '')
+        src = request.get_json().get('src')
+        dest = request.get_json().get('dest')
+    else:
+        word = request.args.get('word', '')
+        src = request.args.get('src')
+        dest = request.args.get('dest')
     origin = request.headers.get('origin')
     if ALLOWED_ORIGIN and origin and not origin.endswith(ALLOWED_ORIGIN):
         abort(403)

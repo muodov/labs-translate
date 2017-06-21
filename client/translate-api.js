@@ -1,11 +1,19 @@
 export function translate({word, src, dest}) {
     console.log(word, src, dest);
-    let params = 'word=' + encodeURIComponent(word);
+    let body = {
+        word: word
+    };
     if (dest) {
-        params += '&' + 'dest=' + encodeURIComponent(dest);
+        body.dest = dest;
     }
     if (src) {
-        params += '&' + 'src=' + encodeURIComponent(src);
+        body.src = src;
     }
-    return fetch(API_ENDPOINT + '?' + params);
+    return fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    });
 }
