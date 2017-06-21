@@ -21,6 +21,14 @@ ALLOWED_ORIGIN = os.getenv('ALLOWED_ORIGIN')
 sentry.captureMessage('app started')
 
 
+@application.after_request
+def after_request(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT'
+    return response
+
+
 @application.route("/", methods=['GET', 'POST'])
 def hello():
     if request.method == 'POST':

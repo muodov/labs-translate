@@ -114,10 +114,12 @@ if(false) {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 // CONCATENATED MODULE: ./client/translate-api.js
+let API_ENDPOINT;
+
 if (true) {
-    const API_ENDPOINT = JSON.stringify('https://surfly-labs-translate.herokuapp.com/');
+    API_ENDPOINT = JSON.stringify('https://surfly-labs-translate.herokuapp.com/');
 } else {
-    const API_ENDPOINT = JSON.stringify('/');
+    API_ENDPOINT = JSON.stringify('/');
 }
 
 function translate({word, src, dest}) {
