@@ -1,8 +1,5 @@
 import os
-import logging
 import requests
-
-logger = logging.getLogger(__name__)
 
 LINGVO_API_KEY = os.getenv('LINGVO_API_KEY')
 LINGVO_API_URL = 'https://developers.lingvolive.com'
@@ -27,25 +24,27 @@ LANG_CODES = {
 }
 
 
-def get_auth():
+def get_auth(logger):
     resp = requests.post(
         LINGVO_API_URL + '/api/v1.1/authenticate',
         headers={'Authorization': 'Basic {key}'.format(key=LINGVO_API_KEY)},
-        verify=False
+        verify=False,
+        timeout=5
     )
     resp.raise_for_status()
-    logger.info('got new token: ' + resp.text)
+    if logger:
+        logger.info('got new token: ' + resp.text)
     AUTH['token'] = resp.text
 
 
-def translate(word, src=None, dest=None):
+def translate(word, src=None, dest=None, logger=None):
     if src not in LANG_CODES:
         src = 'ru'
     if dest not in LANG_CODES:
         dest = 'en'
 
     if not AUTH['token']:
-        get_auth()
+        get_auth(logger)
 
     params = {
         'text': word,
@@ -55,18 +54,21 @@ def translate(word, src=None, dest=None):
     resp = requests.get(
         LINGVO_API_URL + '/api/v1/Minicard', params=params,
         headers={'Authorization': 'Bearer {key}'.format(key=AUTH['token'])},
-        verify=False
+        verify=False,
+        timeout=5
     )
     if resp.status_code != 200:
         get_auth()
         resp = requests.get(
             LINGVO_API_URL + '/api/v1/Minicard', params=params,
             headers={'Authorization': 'Bearer {key}'.format(key=AUTH['token'])},
-            verify=False
+            verify=False,
+            timeout=5
         )
 
     if resp.status_code == 200:
-        logger.info('translated: ' + resp.text)
+        if logger:
+            logger.info('translated: ' + resp.text)
         translation = resp.json()
         data = {
             'src': src,
