@@ -1,3 +1,9 @@
+if (process.env.NODE_ENV === 'production') {
+    const API_ENDPOINT = JSON.stringify('https://surfly-labs-translate.herokuapp.com/');
+} else {
+    const API_ENDPOINT = JSON.stringify('/');
+}
+
 export function translate({word, src, dest}) {
     console.log(word, src, dest);
     let body = {

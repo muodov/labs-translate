@@ -39,16 +39,4 @@ let config = {
     }
 };
 
-let defines = {
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-};
-if (process.env.NODE_ENV === 'production') {
-    defines.API_ENDPOINT = JSON.stringify('https://surfly-labs-translate.herokuapp.com/');
-} else {
-    defines.API_ENDPOINT = JSON.stringify('/');
-}
-config.plugins.push(
-    new webpack.DefinePlugin(defines)
-);
-
 module.exports = config;
