@@ -117,9 +117,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 let API_ENDPOINT;
 
 if (true) {
-    API_ENDPOINT = JSON.stringify('https://surfly-labs-translate.herokuapp.com/');
+    API_ENDPOINT = 'https://surfly-labs-translate.herokuapp.com/';
 } else {
-    API_ENDPOINT = JSON.stringify('/');
+    API_ENDPOINT = '/';
 }
 
 function translate({word, src, dest}) {
