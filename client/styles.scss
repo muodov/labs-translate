@@ -1,0 +1,93 @@
+$surfly-red: #e54747;
+$surfly-blue: #2c92d2;
+$surfly-yellow: #e9e760;
+$surfly-dark-blue: #123d57;
+$surfly-dark-red: #6e2222;
+$surfly-dark-yellow: #cbb054;
+
+$primary: $surfly-red;
+
+@import "~bulma/sass/utilities/_all";
+// @import "~bulma/sass/base/_all";
+@import "~bulma/sass/elements/_all";
+// @import "sass/components/_all"
+// @import "sass/grid/_all"
+@import "~bulma/sass/layout/_all";
+
+.annotation-mark {
+    background-color: $surfly-red;
+    cursor: pointer;
+    border-radius: 5px;
+    color: white;
+}
+
+.annotation-panel {
+    @import "~bulma/sass/base/_all";
+    @import "~bulma/sass/elements/_all";
+    // these are from bulma's rule for html
+    font-size: $body-size;
+    text-rendering: $render-mode;
+    // from bulma's rule for body:
+    font-family: $family-primary;
+    color: $text;
+    font-size: 1rem;
+    font-weight: $weight-normal;
+    line-height: 1.5;
+    
+    // custom code below
+
+    z-index: 999999;
+    overflow-y: auto;
+    position: fixed;
+    background: $white;
+    height: 100%;
+    width: 290px;
+    right: 0;
+    top: 0;
+    box-shadow: -3px 0px 10px 0px rgba(10, 10, 10, 0.1);
+
+    transition: right .5s, opacity .4s;
+
+    &.hidden {
+        right: -300px;
+        opacity: 0;
+    }
+
+    .panel-contents {
+        padding: 20px;
+        .snippet {
+            max-height: 200px;
+            overflow: auto;
+        }
+
+        .comments {
+            margin-bottom: 20px;
+            .comment {
+                text-align: left;
+            }
+        }
+
+        .add-form {
+            .new-annotation-text,
+            .new-annotation-name {
+                padding: 0;
+            }
+            .new-annotation-submit,
+            .new-annotation-cancel {
+                text-align: left;
+            }
+        }
+    }
+}
+
+.add-annotation-button {
+    position: fixed;
+    left: 50%;
+    top: 15px;
+    margin-left: -100px;
+    width: 200px;
+
+    &.hidden {
+        display: none;
+    }
+}

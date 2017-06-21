@@ -1,13 +1,12 @@
 import os
 import logging
 import requests
-from flask import Flask, request, abort, jsonify
-application = Flask(__name__)
-application.logger.setLevel(logging.INFO)
+
+logger = logging.getLogger(__name__)
 
 LINGVO_API_KEY = os.getenv('LINGVO_API_KEY')
 LINGVO_API_URL = 'https://developers.lingvolive.com'
-ALLOWED_ORIGIN = os.getenv('ALLOWED_ORIGIN')
+
 AUTH = {'token': None}
 
 LANG_CODES = {
@@ -35,20 +34,11 @@ def get_auth():
         verify=False
     )
     resp.raise_for_status()
-    application.logger.info('got new token: ' + resp.text)
+    logger.info('got new token: ' + resp.text)
     AUTH['token'] = resp.text
 
 
-@application.route("/")
-def hello():
-    word = request.args.get('word', '')
-    src = request.args.get('src', '')
-    dest = request.args.get('dest', '')
-    origin = request.headers.get('origin')
-    if ALLOWED_ORIGIN and origin and not origin.endswith(ALLOWED_ORIGIN):
-        abort(403)
-    if not word:
-        abort(400)
+def translate(word, src=None, dest=None):
     if src not in LANG_CODES:
         src = 'ru'
     if dest not in LANG_CODES:
@@ -76,15 +66,13 @@ def hello():
         )
 
     if resp.status_code == 200:
-        application.logger.info('translated: ' + resp.text)
+        logger.info('translated: ' + resp.text)
         translation = resp.json()
         data = {
-            'SeeAlso': translation.get('SeeAlso'),
-            'Heading': translation.get('Heading'),
-            'Translation': translation['Translation'].get('Translation'),
-            'SoundName': translation['Translation'].get('SoundName'),
-            'DictionaryName': translation['Translation'].get('DictionaryName'),
+            'src': src,
+            'dst': dest,
+            'translation': translation['Translation'].get('Translation'),
+            'dictionary': translation['Translation'].get('DictionaryName'),
             'raw': translation
         }
-        return jsonify(data)
-    abort(404)
+        return data
