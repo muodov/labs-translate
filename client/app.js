@@ -5,7 +5,7 @@ function detectSelection(mouseEvent) {
     let selection = document.getSelection();
     let selectedText = selection.toString().trim();
     if (selectedText.length > 0) {
-        showTranslateButton(mouseEvent, selectedText);
+        showTranslateButton(mouseEvent, selectedText, selection);
     } else if (mouseEvent.target !== translateButton) {
         console.log(mouseEvent);
         hideTranslateButton();
