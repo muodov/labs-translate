@@ -150,6 +150,7 @@ function translate({word, src, dest}) {
 
 let translateButton = null;
 let translationCard = null;
+let note = null;
 
 const LANG_CODES = [
     'az', 'be', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et',
@@ -157,17 +158,17 @@ const LANG_CODES = [
     'pl', 'pt', 'ro', 'ru', 'sk', 'sl', 'sq', 'sr', 'sv', 'tr', 'uk'
 ]
 
-function showTranslateButton(mouseEvent, text, selection) {
+function showTranslateButton(text, selection) {
     hideTranslateButton();
     translateButton = document.createElement('div');
     translateButton.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['translate-button']);
     let rect = selection.getRangeAt(0).getBoundingClientRect();
     let posX = Math.floor((rect.left + rect.right) / 2);
-    let posY = Math.floor(rect.bottom);
+    let posY = Math.floor((rect.top + rect.bottom) / 2);
 
     translateButton.style.left = posX - 20 + 'px';
     translateButton.style.top = posY - 40 + 'px';
-    translateButton.addEventListener('click', () => {
+    translateButton.addEventListener('mousedown', () => {
         hideTranslateButton();
         translate({word: text, dest: 'en'}).then(resp => {
             return resp.json().then(result => {
@@ -181,6 +182,7 @@ function showTranslateButton(mouseEvent, text, selection) {
 function hideTranslateButton() {
     if (translateButton && translateButton.parentNode) {
         translateButton.parentNode.removeChild(translateButton);
+        translateButton = null;
     }
 }
 
@@ -263,7 +265,15 @@ function showTranslation(text, result) {
 function hideTranslation() {
     if (translationCard && translationCard.parentNode) {
         translationCard.parentNode.removeChild(translationCard);
+        translationCard = null;
     }
+}
+
+function showNote() {
+    note = document.createElement('div');
+    note.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['note']);
+    note.textContent = 'Welcome to the Surfly Labs Translation demo! Select text you would like to translate';
+    document.body.appendChild(note);
 }
 
 // CONCATENATED MODULE: ./client/app.js
@@ -272,19 +282,19 @@ function hideTranslation() {
 
 
 
-function detectSelection(mouseEvent) {
+function detectSelection() {
     let selection = document.getSelection();
     let selectedText = selection.toString().trim();
-    if (selectedText.length > 0) {
-        showTranslateButton(mouseEvent, selectedText, selection);
-    } else if (mouseEvent.target !== translateButton) {
-        console.log(mouseEvent);
+    if (selectedText.length > 0 && !translationCard) {
+        showTranslateButton(selectedText, selection);
+    } else {
         hideTranslateButton();
     }
 }
 
 function init() {
-    document.addEventListener('mouseup', detectSelection);
+    document.addEventListener('selectionchange', detectSelection);
+    showNote();
     console.log('translation mixin initialized!');
 }
 
@@ -311,10 +321,11 @@ exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/li
 
 
 // module
-exports.push([module.i, ".styles__translate-button___1DVzm {\n  position: fixed;\n  width: 40px;\n  height: 40px;\n  background: url(\"https://surfly-labs-translate.herokuapp.com/translate-icon.png\");\n  cursor: pointer; }\n\n.styles__translate-card___2vQyg {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  background: rgba(10, 10, 10, 0.5);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 9999999; }\n  .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg {\n    background: white;\n    border-radius: 6px;\n    padding: 10px;\n    width: 50%;\n    min-width: 300px;\n    max-height: 80%;\n    position: relative;\n    display: flex;\n    flex-direction: column; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-header___1SpaK {\n      margin: 0;\n      padding: 10px 0;\n      border-bottom: solid black 1px; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-controls___2-ndI {\n      padding: 10px 0; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-content___1LTYz {\n      max-height: 80%;\n      max-width: 100%;\n      overflow: auto; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-footer___3DXOZ {\n      border-top: solid 1px black;\n      padding-top: 10px;\n      margin-top: 10px; }\n      .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-footer___3DXOZ a {\n        text-decoration: none;\n        color: crimson; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi {\n      cursor: pointer;\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      width: 23px;\n      height: 23px;\n      opacity: 0.3; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:hover {\n      opacity: 1; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:before, .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:after {\n      position: absolute;\n      left: 11px;\n      content: ' ';\n      height: 24px;\n      width: 2px;\n      background-color: #333; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:before {\n      transform: rotate(45deg); }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:after {\n      transform: rotate(-45deg); }\n\n.styles__annotation-mark___1SUZq {\n  background-color: #e54747;\n  cursor: pointer;\n  border-radius: 5px;\n  color: white; }\n\n.styles__annotation-panel___37iiJ {\n  z-index: 999999;\n  overflow-y: auto;\n  position: fixed;\n  background: white;\n  height: 100%;\n  width: 290px;\n  right: 0;\n  top: 0;\n  box-shadow: -3px 0px 10px 0px rgba(10, 10, 10, 0.1);\n  transition: right .5s, opacity .4s; }\n  .styles__annotation-panel___37iiJ.styles__hidden___1qRS2 {\n    right: -300px;\n    opacity: 0; }\n  .styles__annotation-panel___37iiJ .styles__panel-contents___2NsRF {\n    padding: 20px; }\n    .styles__annotation-panel___37iiJ .styles__panel-contents___2NsRF .styles__snippet___35mpP {\n      max-height: 200px;\n      overflow: auto; }\n    .styles__annotation-panel___37iiJ .styles__panel-contents___2NsRF .styles__comments___2Mngh {\n      margin-bottom: 20px; }\n      .styles__annotation-panel___37iiJ .styles__panel-contents___2NsRF .styles__comments___2Mngh .styles__comment___iXbO3 {\n        text-align: left; }\n    .styles__annotation-panel___37iiJ .styles__panel-contents___2NsRF .styles__add-form___12i9F .styles__new-annotation-text___3lCte,\n    .styles__annotation-panel___37iiJ .styles__panel-contents___2NsRF .styles__add-form___12i9F .styles__new-annotation-name___1nBI0 {\n      padding: 0; }\n    .styles__annotation-panel___37iiJ .styles__panel-contents___2NsRF .styles__add-form___12i9F .styles__new-annotation-submit___ahjEA,\n    .styles__annotation-panel___37iiJ .styles__panel-contents___2NsRF .styles__add-form___12i9F .styles__new-annotation-cancel___32qYJ {\n      text-align: left; }\n\n.styles__add-annotation-button___35iwi {\n  position: fixed;\n  left: 50%;\n  top: 15px;\n  margin-left: -100px;\n  width: 200px; }\n  .styles__add-annotation-button___35iwi.styles__hidden___1qRS2 {\n    display: none; }\n", ""]);
+exports.push([module.i, ".styles__note___2iv3k {\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  width: 100%;\n  height: 20px;\n  font-size: 16px;\n  pointer-events: none;\n  background: rgba(229, 71, 71, 0.8);\n  color: white;\n  text-align: center;\n  padding: 10px; }\n\n.styles__translate-button___1DVzm {\n  position: fixed;\n  width: 40px;\n  height: 40px;\n  background: url(\"https://surfly-labs-translate.herokuapp.com/translate-icon.png\");\n  cursor: pointer; }\n\n.styles__translate-card___2vQyg {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  background: rgba(10, 10, 10, 0.5);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 9999999; }\n  .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg {\n    background: white;\n    border-radius: 6px;\n    padding: 10px;\n    width: 50%;\n    min-width: 300px;\n    max-height: 80%;\n    position: relative;\n    display: flex;\n    flex-direction: column; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-header___1SpaK {\n      margin: 0;\n      padding: 10px 0;\n      border-bottom: solid black 1px; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-controls___2-ndI {\n      padding: 10px 0; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-content___1LTYz {\n      max-height: 80%;\n      max-width: 100%;\n      overflow: auto; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-footer___3DXOZ {\n      border-top: solid 1px black;\n      padding-top: 10px;\n      margin-top: 10px; }\n      .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-footer___3DXOZ a {\n        text-decoration: none;\n        color: #e54747; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi {\n      cursor: pointer;\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      width: 23px;\n      height: 23px;\n      opacity: 0.3; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:hover {\n      opacity: 1; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:before, .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:after {\n      position: absolute;\n      left: 11px;\n      content: ' ';\n      height: 24px;\n      width: 2px;\n      background-color: #333; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:before {\n      transform: rotate(45deg); }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:after {\n      transform: rotate(-45deg); }\n", ""]);
 
 // exports
 exports.locals = {
+	"note": "styles__note___2iv3k",
 	"translate-button": "styles__translate-button___1DVzm",
 	"translate-card": "styles__translate-card___2vQyg",
 	"translate-card-content": "styles__translate-card-content___1fVsg",
@@ -322,20 +333,7 @@ exports.locals = {
 	"translate-controls": "styles__translate-controls___2-ndI",
 	"translate-content": "styles__translate-content___1LTYz",
 	"translate-footer": "styles__translate-footer___3DXOZ",
-	"translate-close": "styles__translate-close___2XEdi",
-	"annotation-mark": "styles__annotation-mark___1SUZq",
-	"annotation-panel": "styles__annotation-panel___37iiJ",
-	"hidden": "styles__hidden___1qRS2",
-	"panel-contents": "styles__panel-contents___2NsRF",
-	"snippet": "styles__snippet___35mpP",
-	"comments": "styles__comments___2Mngh",
-	"comment": "styles__comment___iXbO3",
-	"add-form": "styles__add-form___12i9F",
-	"new-annotation-text": "styles__new-annotation-text___3lCte",
-	"new-annotation-name": "styles__new-annotation-name___1nBI0",
-	"new-annotation-submit": "styles__new-annotation-submit___ahjEA",
-	"new-annotation-cancel": "styles__new-annotation-cancel___32qYJ",
-	"add-annotation-button": "styles__add-annotation-button___35iwi"
+	"translate-close": "styles__translate-close___2XEdi"
 };
 
 /***/ }),

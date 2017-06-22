@@ -3,6 +3,7 @@ import {translate} from './translate-api.js';
 
 export let translateButton = null;
 export let translationCard = null;
+export let note = null;
 
 const LANG_CODES = [
     'az', 'be', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et',
@@ -10,17 +11,17 @@ const LANG_CODES = [
     'pl', 'pt', 'ro', 'ru', 'sk', 'sl', 'sq', 'sr', 'sv', 'tr', 'uk'
 ]
 
-export function showTranslateButton(mouseEvent, text, selection) {
+export function showTranslateButton(text, selection) {
     hideTranslateButton();
     translateButton = document.createElement('div');
     translateButton.classList.add(styles['translate-button']);
     let rect = selection.getRangeAt(0).getBoundingClientRect();
     let posX = Math.floor((rect.left + rect.right) / 2);
-    let posY = Math.floor(rect.bottom);
+    let posY = Math.floor((rect.top + rect.bottom) / 2);
 
     translateButton.style.left = posX - 20 + 'px';
     translateButton.style.top = posY - 40 + 'px';
-    translateButton.addEventListener('click', () => {
+    translateButton.addEventListener('mousedown', () => {
         hideTranslateButton();
         translate({word: text, dest: 'en'}).then(resp => {
             return resp.json().then(result => {
@@ -34,6 +35,7 @@ export function showTranslateButton(mouseEvent, text, selection) {
 export function hideTranslateButton() {
     if (translateButton && translateButton.parentNode) {
         translateButton.parentNode.removeChild(translateButton);
+        translateButton = null;
     }
 }
 
@@ -116,5 +118,13 @@ export function showTranslation(text, result) {
 export function hideTranslation() {
     if (translationCard && translationCard.parentNode) {
         translationCard.parentNode.removeChild(translationCard);
+        translationCard = null;
     }
+}
+
+export function showNote() {
+    note = document.createElement('div');
+    note.classList.add(styles['note']);
+    note.textContent = 'Welcome to the Surfly Labs Translation demo! Select text you would like to translate';
+    document.body.appendChild(note);
 }

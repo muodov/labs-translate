@@ -1,19 +1,19 @@
 import styles from './styles.scss';
-import {showTranslateButton, hideTranslateButton, translateButton} from './ui.js';
+import {showTranslateButton, hideTranslateButton, translationCard, showNote} from './ui.js';
 
-function detectSelection(mouseEvent) {
+function detectSelection() {
     let selection = document.getSelection();
     let selectedText = selection.toString().trim();
-    if (selectedText.length > 0) {
-        showTranslateButton(mouseEvent, selectedText, selection);
-    } else if (mouseEvent.target !== translateButton) {
-        console.log(mouseEvent);
+    if (selectedText.length > 0 && !translationCard) {
+        showTranslateButton(selectedText, selection);
+    } else {
         hideTranslateButton();
     }
 }
 
 function init() {
-    document.addEventListener('mouseup', detectSelection);
+    document.addEventListener('selectionchange', detectSelection);
+    showNote();
     console.log('translation mixin initialized!');
 }
 

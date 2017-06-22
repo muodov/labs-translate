@@ -5,6 +5,20 @@ $surfly-dark-blue: #123d57;
 $surfly-dark-red: #6e2222;
 $surfly-dark-yellow: #cbb054;
 
+.note {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    font-size: 16px;
+    pointer-events: none;
+    background: rgba(229, 71, 71, 0.8);
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
 .translate-button {
     position: fixed;
     width: 40px;
@@ -58,7 +72,7 @@ $surfly-dark-yellow: #cbb054;
             margin-top: 10px;
             a {
                 text-decoration: none;
-                color: crimson;
+                color: $surfly-red;
             }
         }
 
@@ -89,72 +103,5 @@ $surfly-dark-yellow: #cbb054;
             transform: rotate(-45deg);
         }
 
-    }
-}
-
-.annotation-mark {
-    background-color: $surfly-red;
-    cursor: pointer;
-    border-radius: 5px;
-    color: white;
-}
-
-.annotation-panel {
-    
-    // custom code below
-
-    z-index: 999999;
-    overflow-y: auto;
-    position: fixed;
-    background: white;
-    height: 100%;
-    width: 290px;
-    right: 0;
-    top: 0;
-    box-shadow: -3px 0px 10px 0px rgba(10, 10, 10, 0.1);
-
-    transition: right .5s, opacity .4s;
-
-    &.hidden {
-        right: -300px;
-        opacity: 0;
-    }
-
-    .panel-contents {
-        padding: 20px;
-        .snippet {
-            max-height: 200px;
-            overflow: auto;
-        }
-
-        .comments {
-            margin-bottom: 20px;
-            .comment {
-                text-align: left;
-            }
-        }
-
-        .add-form {
-            .new-annotation-text,
-            .new-annotation-name {
-                padding: 0;
-            }
-            .new-annotation-submit,
-            .new-annotation-cancel {
-                text-align: left;
-            }
-        }
-    }
-}
-
-.add-annotation-button {
-    position: fixed;
-    left: 50%;
-    top: 15px;
-    margin-left: -100px;
-    width: 200px;
-
-    &.hidden {
-        display: none;
     }
 }
