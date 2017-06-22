@@ -1,2 +1,2 @@
 # labs-translate
-Surfly Labs experiment using Google Translation API
+Surfly Labs experiment using Yandex Translation API
