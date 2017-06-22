@@ -170,11 +170,7 @@ function showTranslateButton(text, selection) {
     translateButton.style.top = posY - 40 + 'px';
     translateButton.addEventListener('mousedown', () => {
         hideTranslateButton();
-        translate({word: text, dest: 'en'}).then(resp => {
-            return resp.json().then(result => {
-                showTranslation(text, result);
-            });
-        });
+        showTranslation(text);
     });
     document.body.appendChild(translateButton);
 }
@@ -186,8 +182,7 @@ function hideTranslateButton() {
     }
 }
 
-function showTranslation(text, result) {
-    console.log('got translation', result);
+function showTranslation(text, dest) {
     hideTranslation();
     translationCard = document.createElement('div');
     translationCard.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['translate-card']);
@@ -206,52 +201,9 @@ function showTranslation(text, result) {
     header.textContent = text.length > 10 ? text.slice(0, 10) + '...' : text;
     translationCardContent.appendChild(header);
 
-    let controls = document.createElement('div');
-    controls.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['translate-controls']);
-    let srcSelect = document.createElement('select');
-    LANG_CODES.forEach(code => {
-        let choice = document.createElement('option');
-        if (result.src === code) {
-            choice.selected = true;
-        }
-        choice.value = choice.textContent = code;
-        srcSelect.appendChild(choice);
-    });
-    let arrow = document.createElement('span');
-    arrow.textContent = ' -> ';
-    let dstSelect = document.createElement('select');
-    LANG_CODES.forEach(code => {
-        let choice = document.createElement('option');
-        if (result.dst === code) {
-            choice.selected = true;
-        }
-        choice.value = choice.textContent = code;
-        dstSelect.appendChild(choice);
-    });
-
-    function changeDirection() {
-        srcSelect.disabled = true;
-        dstSelect.disabled = true;
-        translate({word: text, src: srcSelect.value, dest: dstSelect.value}).then(resp => {
-            srcSelect.disabled = false;
-            dstSelect.disabled = false;
-            return resp.json().then(result => {
-                showTranslation(text, result);
-            });
-        });
-    }
-    srcSelect.addEventListener('change', changeDirection);
-    dstSelect.addEventListener('change', changeDirection);
-
-    controls.appendChild(srcSelect);
-    controls.appendChild(arrow);
-    controls.appendChild(dstSelect);
-    translationCardContent.appendChild(controls);
-
-    let content = document.createElement('div');
-    content.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['translate-content']);
-    content.textContent = result.translation;
-    translationCardContent.appendChild(content);
+    let spinner = document.createElement('div');
+    spinner.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['spinner']);
+    translationCardContent.appendChild(spinner);
 
     let footer = document.createElement('div');
     footer.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['translate-footer']);
@@ -260,6 +212,61 @@ function showTranslation(text, result) {
 
     translationCard.appendChild(translationCardContent);
     document.body.appendChild(translationCard);
+
+    translate({word: text, dest: dest}).then(resp => {
+        return resp.json().then(result => {
+            console.log('got translation', result);
+
+            let controls = document.createElement('div');
+            controls.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['translate-controls']);
+            let srcSelect = document.createElement('select');
+            LANG_CODES.forEach(code => {
+                let choice = document.createElement('option');
+                if (result.src === code) {
+                    choice.selected = true;
+                }
+                choice.value = choice.textContent = code;
+                srcSelect.appendChild(choice);
+            });
+            let arrow = document.createElement('span');
+            arrow.textContent = ' -> ';
+            let dstSelect = document.createElement('select');
+            LANG_CODES.forEach(code => {
+                let choice = document.createElement('option');
+                if (result.dst === code) {
+                    choice.selected = true;
+                }
+                choice.value = choice.textContent = code;
+                dstSelect.appendChild(choice);
+            });
+
+            function changeDirection() {
+                translationCardContent.replaceChild(spinner, translationBody);
+                translate({word: text, src: srcSelect.value, dest: dstSelect.value}).then(resp => {
+                    return resp.json().then(result => {
+                        translationCardContent.replaceChild(translationBody, spinner);
+                        content.textContent = result.translation;
+                    });
+                });
+            }
+            srcSelect.addEventListener('change', changeDirection);
+            dstSelect.addEventListener('change', changeDirection);
+
+            controls.appendChild(srcSelect);
+            controls.appendChild(arrow);
+            controls.appendChild(dstSelect);
+
+            let content = document.createElement('div');
+            content.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['translate-content']);
+            content.textContent = result.translation;
+
+            let translationBody = document.createElement('div');
+            translationBody.appendChild(controls);
+            translationBody.appendChild(content);
+
+            translationCardContent.replaceChild(translationBody, spinner);
+        });
+    });
 }
 
 function hideTranslation() {
@@ -321,7 +328,7 @@ exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/li
 
 
 // module
-exports.push([module.i, ".styles__note___2iv3k {\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  width: 100%;\n  font-size: 16px;\n  pointer-events: none;\n  background: rgba(229, 71, 71, 0.8);\n  color: white;\n  text-align: center;\n  padding: 10px; }\n\n.styles__translate-button___1DVzm {\n  position: fixed;\n  width: 40px;\n  height: 40px;\n  background: url(\"https://surfly-labs-translate.herokuapp.com/translate-icon.png\");\n  cursor: pointer; }\n\n.styles__translate-card___2vQyg {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  background: rgba(10, 10, 10, 0.5);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 9999999; }\n  .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg {\n    background: white;\n    border-radius: 6px;\n    padding: 10px;\n    width: 50%;\n    min-width: 300px;\n    max-height: 80%;\n    position: relative;\n    display: flex;\n    flex-direction: column; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-header___1SpaK {\n      margin: 0;\n      padding: 10px 0;\n      border-bottom: solid black 1px; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-controls___2-ndI {\n      padding: 10px 0; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-content___1LTYz {\n      max-height: 80%;\n      max-width: 100%;\n      overflow: auto; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-footer___3DXOZ {\n      border-top: solid 1px black;\n      padding-top: 10px;\n      margin-top: 10px; }\n      .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-footer___3DXOZ a {\n        text-decoration: none;\n        color: #e54747; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi {\n      cursor: pointer;\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      width: 23px;\n      height: 23px;\n      opacity: 0.3; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:hover {\n      opacity: 1; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:before, .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:after {\n      position: absolute;\n      left: 11px;\n      content: ' ';\n      height: 24px;\n      width: 2px;\n      background-color: #333; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:before {\n      transform: rotate(45deg); }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:after {\n      transform: rotate(-45deg); }\n", ""]);
+exports.push([module.i, ".styles__note___2iv3k {\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  width: 100%;\n  font-size: 16px;\n  pointer-events: none;\n  background: rgba(229, 71, 71, 0.8);\n  color: white;\n  text-align: center;\n  padding: 10px; }\n\n.styles__translate-button___1DVzm {\n  position: fixed;\n  width: 40px;\n  height: 40px;\n  background: url(\"https://surfly-labs-translate.herokuapp.com/translate-icon.png\");\n  cursor: pointer; }\n\n.styles__translate-card___2vQyg {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  background: rgba(10, 10, 10, 0.5);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 9999999; }\n  .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg {\n    background: white;\n    border-radius: 6px;\n    padding: 10px;\n    width: 50%;\n    min-width: 300px;\n    max-height: 80%;\n    position: relative;\n    display: flex;\n    flex-direction: column; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-header___1SpaK {\n      margin: 0;\n      padding: 10px 0;\n      border-bottom: solid black 1px; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-controls___2-ndI {\n      padding: 10px 0; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-content___1LTYz {\n      max-height: 80%;\n      max-width: 100%;\n      overflow: auto; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-footer___3DXOZ {\n      border-top: solid 1px black;\n      padding-top: 10px;\n      margin-top: 10px; }\n      .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-footer___3DXOZ a {\n        text-decoration: none;\n        color: #e54747; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi {\n      cursor: pointer;\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      width: 23px;\n      height: 23px;\n      opacity: 0.3; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:hover {\n      opacity: 1; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:before, .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:after {\n      position: absolute;\n      left: 11px;\n      content: ' ';\n      height: 24px;\n      width: 2px;\n      background-color: #333; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:before {\n      transform: rotate(45deg); }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:after {\n      transform: rotate(-45deg); }\n\n@-webkit-keyframes styles__loading___189dP {\n  to {\n    -webkit-transform: rotate(360deg); } }\n\n@-moz-keyframes styles__loading___189dP {\n  to {\n    -moz-transform: rotate(360deg); } }\n\n@-ms-keyframes styles__loading___189dP {\n  .translate-card .translate-card-content to {\n    -ms-transform: rotate(360deg); } }\n\n@keyframes styles__loading___189dP {\n  to {\n    transform: rotate(360deg); } }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__spinner____9h4Y {\n      width: 40px;\n      height: 40px;\n      margin: 20px auto;\n      border-radius: 50%;\n      background: transparent;\n      border-top: 4px solid #fff;\n      border-right: 4px solid #fff;\n      border-bottom: 4px solid #777;\n      border-left: 4px solid #777;\n      -webkit-animation: styles__loading___189dP 1.2s infinite linear;\n      -moz-animation: styles__loading___189dP 1.2s infinite linear;\n      -ms-animation: styles__loading___189dP 1.2s infinite linear;\n      animation: styles__loading___189dP 1.2s infinite linear; }\n", ""]);
 
 // exports
 exports.locals = {
@@ -333,7 +340,9 @@ exports.locals = {
 	"translate-controls": "styles__translate-controls___2-ndI",
 	"translate-content": "styles__translate-content___1LTYz",
 	"translate-footer": "styles__translate-footer___3DXOZ",
-	"translate-close": "styles__translate-close___2XEdi"
+	"translate-close": "styles__translate-close___2XEdi",
+	"spinner": "styles__spinner____9h4Y",
+	"loading": "styles__loading___189dP"
 };
 
 /***/ }),

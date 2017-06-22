@@ -23,11 +23,7 @@ export function showTranslateButton(text, selection) {
     translateButton.style.top = posY - 40 + 'px';
     translateButton.addEventListener('mousedown', () => {
         hideTranslateButton();
-        translate({word: text, dest: 'en'}).then(resp => {
-            return resp.json().then(result => {
-                showTranslation(text, result);
-            });
-        });
+        showTranslation(text);
     });
     document.body.appendChild(translateButton);
 }
@@ -39,8 +35,7 @@ export function hideTranslateButton() {
     }
 }
 
-export function showTranslation(text, result) {
-    console.log('got translation', result);
+export function showTranslation(text, dest) {
     hideTranslation();
     translationCard = document.createElement('div');
     translationCard.classList.add(styles['translate-card']);
@@ -59,52 +54,9 @@ export function showTranslation(text, result) {
     header.textContent = text.length > 10 ? text.slice(0, 10) + '...' : text;
     translationCardContent.appendChild(header);
 
-    let controls = document.createElement('div');
-    controls.classList.add(styles['translate-controls']);
-    let srcSelect = document.createElement('select');
-    LANG_CODES.forEach(code => {
-        let choice = document.createElement('option');
-        if (result.src === code) {
-            choice.selected = true;
-        }
-        choice.value = choice.textContent = code;
-        srcSelect.appendChild(choice);
-    });
-    let arrow = document.createElement('span');
-    arrow.textContent = ' -> ';
-    let dstSelect = document.createElement('select');
-    LANG_CODES.forEach(code => {
-        let choice = document.createElement('option');
-        if (result.dst === code) {
-            choice.selected = true;
-        }
-        choice.value = choice.textContent = code;
-        dstSelect.appendChild(choice);
-    });
-
-    function changeDirection() {
-        srcSelect.disabled = true;
-        dstSelect.disabled = true;
-        translate({word: text, src: srcSelect.value, dest: dstSelect.value}).then(resp => {
-            srcSelect.disabled = false;
-            dstSelect.disabled = false;
-            return resp.json().then(result => {
-                showTranslation(text, result);
-            });
-        });
-    }
-    srcSelect.addEventListener('change', changeDirection);
-    dstSelect.addEventListener('change', changeDirection);
-
-    controls.appendChild(srcSelect);
-    controls.appendChild(arrow);
-    controls.appendChild(dstSelect);
-    translationCardContent.appendChild(controls);
-
-    let content = document.createElement('div');
-    content.classList.add(styles['translate-content']);
-    content.textContent = result.translation;
-    translationCardContent.appendChild(content);
+    let spinner = document.createElement('div');
+    spinner.classList.add(styles['spinner']);
+    translationCardContent.appendChild(spinner);
 
     let footer = document.createElement('div');
     footer.classList.add(styles['translate-footer']);
@@ -113,6 +65,61 @@ export function showTranslation(text, result) {
 
     translationCard.appendChild(translationCardContent);
     document.body.appendChild(translationCard);
+
+    translate({word: text, dest: dest}).then(resp => {
+        return resp.json().then(result => {
+            console.log('got translation', result);
+
+            let controls = document.createElement('div');
+            controls.classList.add(styles['translate-controls']);
+            let srcSelect = document.createElement('select');
+            LANG_CODES.forEach(code => {
+                let choice = document.createElement('option');
+                if (result.src === code) {
+                    choice.selected = true;
+                }
+                choice.value = choice.textContent = code;
+                srcSelect.appendChild(choice);
+            });
+            let arrow = document.createElement('span');
+            arrow.textContent = ' -> ';
+            let dstSelect = document.createElement('select');
+            LANG_CODES.forEach(code => {
+                let choice = document.createElement('option');
+                if (result.dst === code) {
+                    choice.selected = true;
+                }
+                choice.value = choice.textContent = code;
+                dstSelect.appendChild(choice);
+            });
+
+            function changeDirection() {
+                translationCardContent.replaceChild(spinner, translationBody);
+                translate({word: text, src: srcSelect.value, dest: dstSelect.value}).then(resp => {
+                    return resp.json().then(result => {
+                        translationCardContent.replaceChild(translationBody, spinner);
+                        content.textContent = result.translation;
+                    });
+                });
+            }
+            srcSelect.addEventListener('change', changeDirection);
+            dstSelect.addEventListener('change', changeDirection);
+
+            controls.appendChild(srcSelect);
+            controls.appendChild(arrow);
+            controls.appendChild(dstSelect);
+
+            let content = document.createElement('div');
+            content.classList.add(styles['translate-content']);
+            content.textContent = result.translation;
+
+            let translationBody = document.createElement('div');
+            translationBody.appendChild(controls);
+            translationBody.appendChild(content);
+
+            translationCardContent.replaceChild(translationBody, spinner);
+        });
+    });
 }
 
 export function hideTranslation() {
