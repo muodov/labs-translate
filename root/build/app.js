@@ -116,7 +116,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 // CONCATENATED MODULE: ./client/translate-api.js
 let API_ENDPOINT;
 
-if (true) {
+if (false) {
     API_ENDPOINT = 'https://surfly-labs-translate.herokuapp.com/';
 } else {
     API_ENDPOINT = '/';
@@ -197,6 +197,12 @@ function showTranslation(text, dest) {
     hideTranslation();
     translationCard = document.createElement('div');
     translationCard.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['translate-card']);
+    translationCard.addEventListener('click', e => {
+        if (e.target === translationCard) {
+            hideTranslation();
+        }
+    });
+
     let translationCardContent = document.createElement('div');
     translationCardContent.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['translate-card-content']);
     

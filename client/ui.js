@@ -50,6 +50,12 @@ export function showTranslation(text, dest) {
     hideTranslation();
     translationCard = document.createElement('div');
     translationCard.classList.add(styles['translate-card']);
+    translationCard.addEventListener('click', e => {
+        if (e.target === translationCard) {
+            hideTranslation();
+        }
+    });
+
     let translationCardContent = document.createElement('div');
     translationCardContent.classList.add(styles['translate-card-content']);
     
