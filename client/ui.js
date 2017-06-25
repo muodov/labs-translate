@@ -4,6 +4,7 @@ import {translate} from './translate-api.js';
 export let translateButton = null;
 export let translationCard = null;
 export let note = null;
+export let textToTranslate = '';
 
 const LANG_CODES = [
     'az', 'be', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et',
@@ -11,27 +12,37 @@ const LANG_CODES = [
     'pl', 'pt', 'ro', 'ru', 'sk', 'sl', 'sq', 'sr', 'sv', 'tr', 'uk'
 ]
 
-export function showTranslateButton(text, selection) {
-    hideTranslateButton();
+export function initTranslateButton() {
     translateButton = document.createElement('div');
     translateButton.classList.add(styles['translate-button']);
-    let rect = selection.getRangeAt(0).getBoundingClientRect();
-    let posX = Math.floor((rect.left + rect.right) / 2);
-    let posY = Math.floor((rect.top + rect.bottom) / 2);
-
-    translateButton.style.left = posX - 20 + 'px';
-    translateButton.style.top = posY - 40 + 'px';
     translateButton.addEventListener('mousedown', () => {
         hideTranslateButton();
-        showTranslation(text);
+        showTranslation(textToTranslate);
     });
     document.body.appendChild(translateButton);
 }
 
+export function showTranslateButton(text, selection) {
+    if (!translateButton) {
+        initTranslateButton();
+    }
+    textToTranslate = text;
+
+    // let rect = selection.getRangeAt(0).getBoundingClientRect();
+    // let posX = Math.floor((rect.left + rect.right) / 2);
+    // let posY = rect.bottom;
+
+    // translateButton.style.left = posX - 20 + 'px';
+    // translateButton.style.top = posY - 40 + 'px';
+
+    translateButton.classList.add(styles['shown']);
+    note.classList.remove(styles['shown']);
+}
+
 export function hideTranslateButton() {
     if (translateButton && translateButton.parentNode) {
-        translateButton.parentNode.removeChild(translateButton);
-        translateButton = null;
+        translateButton.classList.remove(styles['shown']);
+        note.classList.add(styles['shown']);
     }
 }
 
@@ -114,6 +125,7 @@ export function showTranslation(text, dest) {
             content.textContent = result.translation;
 
             let translationBody = document.createElement('div');
+            translationBody.classList.add(styles['translate-body']);
             translationBody.appendChild(controls);
             translationBody.appendChild(content);
 
@@ -132,6 +144,7 @@ export function hideTranslation() {
 export function showNote() {
     note = document.createElement('div');
     note.classList.add(styles['note']);
+    note.classList.add(styles['shown']);
     note.textContent = 'Welcome to the Surfly Labs Translation demo! Select text you would like to translate';
     document.body.appendChild(note);
 }

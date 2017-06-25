@@ -151,6 +151,7 @@ function translate({word, src, dest}) {
 let translateButton = null;
 let translationCard = null;
 let note = null;
+let textToTranslate = '';
 
 const LANG_CODES = [
     'az', 'be', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et',
@@ -158,27 +159,37 @@ const LANG_CODES = [
     'pl', 'pt', 'ro', 'ru', 'sk', 'sl', 'sq', 'sr', 'sv', 'tr', 'uk'
 ]
 
-function showTranslateButton(text, selection) {
-    hideTranslateButton();
+function initTranslateButton() {
     translateButton = document.createElement('div');
     translateButton.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['translate-button']);
-    let rect = selection.getRangeAt(0).getBoundingClientRect();
-    let posX = Math.floor((rect.left + rect.right) / 2);
-    let posY = Math.floor((rect.top + rect.bottom) / 2);
-
-    translateButton.style.left = posX - 20 + 'px';
-    translateButton.style.top = posY - 40 + 'px';
     translateButton.addEventListener('mousedown', () => {
         hideTranslateButton();
-        showTranslation(text);
+        showTranslation(textToTranslate);
     });
     document.body.appendChild(translateButton);
 }
 
+function showTranslateButton(text, selection) {
+    if (!translateButton) {
+        initTranslateButton();
+    }
+    textToTranslate = text;
+
+    // let rect = selection.getRangeAt(0).getBoundingClientRect();
+    // let posX = Math.floor((rect.left + rect.right) / 2);
+    // let posY = rect.bottom;
+
+    // translateButton.style.left = posX - 20 + 'px';
+    // translateButton.style.top = posY - 40 + 'px';
+
+    translateButton.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['shown']);
+    note.classList.remove(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['shown']);
+}
+
 function hideTranslateButton() {
     if (translateButton && translateButton.parentNode) {
-        translateButton.parentNode.removeChild(translateButton);
-        translateButton = null;
+        translateButton.classList.remove(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['shown']);
+        note.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['shown']);
     }
 }
 
@@ -261,6 +272,7 @@ function showTranslation(text, dest) {
             content.textContent = result.translation;
 
             let translationBody = document.createElement('div');
+            translationBody.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['translate-body']);
             translationBody.appendChild(controls);
             translationBody.appendChild(content);
 
@@ -279,6 +291,7 @@ function hideTranslation() {
 function showNote() {
     note = document.createElement('div');
     note.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['note']);
+    note.classList.add(__WEBPACK_IMPORTED_MODULE_0__styles_scss___default.a['shown']);
     note.textContent = 'Welcome to the Surfly Labs Translation demo! Select text you would like to translate';
     document.body.appendChild(note);
 }
@@ -328,15 +341,17 @@ exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/li
 
 
 // module
-exports.push([module.i, ".styles__note___2iv3k {\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  width: 100%;\n  font-size: 16px;\n  pointer-events: none;\n  background: rgba(229, 71, 71, 0.8);\n  color: white;\n  text-align: center;\n  padding: 10px; }\n\n.styles__translate-button___1DVzm {\n  position: fixed;\n  width: 40px;\n  height: 40px;\n  background: url(\"https://surfly-labs-translate.herokuapp.com/translate-icon.png\");\n  cursor: pointer; }\n\n.styles__translate-card___2vQyg {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  background: rgba(10, 10, 10, 0.5);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 9999999; }\n  .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg {\n    background: white;\n    border-radius: 6px;\n    padding: 10px;\n    width: 50%;\n    min-width: 300px;\n    max-height: 80%;\n    position: relative;\n    display: flex;\n    flex-direction: column; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-header___1SpaK {\n      margin: 0;\n      padding: 10px 0;\n      border-bottom: solid black 1px; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-controls___2-ndI {\n      padding: 10px 0; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-content___1LTYz {\n      max-height: 80%;\n      max-width: 100%;\n      overflow: auto; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-footer___3DXOZ {\n      border-top: solid 1px black;\n      padding-top: 10px;\n      margin-top: 10px; }\n      .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-footer___3DXOZ a {\n        text-decoration: none;\n        color: #e54747; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi {\n      cursor: pointer;\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      width: 23px;\n      height: 23px;\n      opacity: 0.3; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:hover {\n      opacity: 1; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:before, .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:after {\n      position: absolute;\n      left: 11px;\n      content: ' ';\n      height: 24px;\n      width: 2px;\n      background-color: #333; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:before {\n      transform: rotate(45deg); }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:after {\n      transform: rotate(-45deg); }\n\n@-webkit-keyframes styles__loading___189dP {\n  to {\n    -webkit-transform: rotate(360deg); } }\n\n@-moz-keyframes styles__loading___189dP {\n  to {\n    -moz-transform: rotate(360deg); } }\n\n@-ms-keyframes styles__loading___189dP {\n  .translate-card .translate-card-content to {\n    -ms-transform: rotate(360deg); } }\n\n@keyframes styles__loading___189dP {\n  to {\n    transform: rotate(360deg); } }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__spinner____9h4Y {\n      width: 40px;\n      height: 40px;\n      margin: 20px auto;\n      border-radius: 50%;\n      background: transparent;\n      border-top: 4px solid #fff;\n      border-right: 4px solid #fff;\n      border-bottom: 4px solid #777;\n      border-left: 4px solid #777;\n      -webkit-animation: styles__loading___189dP 1.2s infinite linear;\n      -moz-animation: styles__loading___189dP 1.2s infinite linear;\n      -ms-animation: styles__loading___189dP 1.2s infinite linear;\n      animation: styles__loading___189dP 1.2s infinite linear; }\n", ""]);
+exports.push([module.i, ".styles__note___2iv3k {\n  position: fixed;\n  bottom: -300px;\n  left: 0;\n  transition: all .3s;\n  width: 100%;\n  font-size: 16px;\n  pointer-events: none;\n  background: rgba(229, 71, 71, 0.8);\n  color: white;\n  text-align: center;\n  padding: 10px; }\n  .styles__note___2iv3k.styles__shown___2JVlz {\n    bottom: 0; }\n\n.styles__translate-button___1DVzm {\n  position: fixed;\n  bottom: -100px;\n  opacity: 0;\n  transition: all .3s;\n  width: 100%;\n  height: 100px;\n  background: url(\"https://surfly-labs-translate.herokuapp.com/translate-icon-bottom.png\") no-repeat center;\n  cursor: pointer; }\n  .styles__translate-button___1DVzm.styles__shown___2JVlz {\n    bottom: 0;\n    opacity: 1; }\n\n.styles__translate-card___2vQyg {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  background: rgba(10, 10, 10, 0.5);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 9999999; }\n  .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg {\n    background: white;\n    border-radius: 6px;\n    padding: 10px;\n    width: 50%;\n    min-width: 300px;\n    max-height: 80%;\n    position: relative;\n    display: flex;\n    flex-direction: column; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-header___1SpaK {\n      margin: 0;\n      padding: 10px 0;\n      border-bottom: solid black 1px; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-body___35jLh {\n      overflow: auto;\n      max-height: 80%;\n      max-width: 100%; }\n      .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-body___35jLh .styles__translate-controls___2-ndI {\n        padding: 10px 0; }\n      .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-body___35jLh .styles__translate-content___1LTYz {\n        max-width: 100%; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-footer___3DXOZ {\n      border-top: solid 1px black;\n      padding-top: 10px;\n      margin-top: 10px; }\n      .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-footer___3DXOZ a {\n        text-decoration: none;\n        color: #e54747; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi {\n      cursor: pointer;\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      width: 23px;\n      height: 23px;\n      opacity: 0.3; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:hover {\n      opacity: 1; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:before, .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:after {\n      position: absolute;\n      left: 11px;\n      content: ' ';\n      height: 24px;\n      width: 2px;\n      background-color: #333; }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:before {\n      transform: rotate(45deg); }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__translate-close___2XEdi:after {\n      transform: rotate(-45deg); }\n\n@-webkit-keyframes styles__loading___189dP {\n  to {\n    -webkit-transform: rotate(360deg); } }\n\n@-moz-keyframes styles__loading___189dP {\n  to {\n    -moz-transform: rotate(360deg); } }\n\n@-ms-keyframes styles__loading___189dP {\n  .translate-card .translate-card-content to {\n    -ms-transform: rotate(360deg); } }\n\n@keyframes styles__loading___189dP {\n  to {\n    transform: rotate(360deg); } }\n    .styles__translate-card___2vQyg .styles__translate-card-content___1fVsg .styles__spinner____9h4Y {\n      width: 40px;\n      height: 40px;\n      margin: 20px auto;\n      border-radius: 50%;\n      background: transparent;\n      border-top: 4px solid #fff;\n      border-right: 4px solid #fff;\n      border-bottom: 4px solid #777;\n      border-left: 4px solid #777;\n      -webkit-animation: styles__loading___189dP 1.2s infinite linear;\n      -moz-animation: styles__loading___189dP 1.2s infinite linear;\n      -ms-animation: styles__loading___189dP 1.2s infinite linear;\n      animation: styles__loading___189dP 1.2s infinite linear; }\n", ""]);
 
 // exports
 exports.locals = {
 	"note": "styles__note___2iv3k",
+	"shown": "styles__shown___2JVlz",
 	"translate-button": "styles__translate-button___1DVzm",
 	"translate-card": "styles__translate-card___2vQyg",
 	"translate-card-content": "styles__translate-card-content___1fVsg",
 	"translate-header": "styles__translate-header___1SpaK",
+	"translate-body": "styles__translate-body___35jLh",
 	"translate-controls": "styles__translate-controls___2-ndI",
 	"translate-content": "styles__translate-content___1LTYz",
 	"translate-footer": "styles__translate-footer___3DXOZ",

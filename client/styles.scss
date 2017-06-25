@@ -7,8 +7,9 @@ $surfly-dark-yellow: #cbb054;
 
 .note {
     position: fixed;
-    bottom: 0;
+    bottom: -300px;
     left: 0;
+    transition: all .3s;
     width: 100%;
     font-size: 16px;
     pointer-events: none;
@@ -16,14 +17,27 @@ $surfly-dark-yellow: #cbb054;
     color: white;
     text-align: center;
     padding: 10px;
+
+    &.shown {
+        bottom: 0;
+    }
 }
 
 .translate-button {
     position: fixed;
-    width: 40px;
-    height: 40px;
-    background: url('https://surfly-labs-translate.herokuapp.com/translate-icon.png');
+    bottom: -100px;
+    opacity: 0;
+    transition: all .3s;
+    width: 100%;
+    height: 100px;
+    background: url('https://surfly-labs-translate.herokuapp.com/translate-icon-bottom.png') no-repeat center;
+    // background: url('/translate-icon-bottom.png') no-repeat center;
     cursor: pointer;
+
+    &.shown {
+        bottom: 0;
+        opacity: 1;
+    }
 }
 
 .translate-card {
@@ -55,14 +69,18 @@ $surfly-dark-yellow: #cbb054;
             border-bottom: solid black 1px;
         }
 
-        .translate-controls {
-            padding: 10px 0;
-        }
-
-        .translate-content {
+        .translate-body {
+            overflow: auto;
             max-height: 80%;
             max-width: 100%;
-            overflow: auto;
+
+            .translate-controls {
+                padding: 10px 0;
+            }
+
+            .translate-content {
+                max-width: 100%;
+            }
         }
 
         .translate-footer {
