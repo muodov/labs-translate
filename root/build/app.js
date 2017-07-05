@@ -116,7 +116,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 // CONCATENATED MODULE: ./client/translate-api.js
 let API_ENDPOINT;
 
-if (false) {
+if (true) {
     API_ENDPOINT = 'https://surfly-labs-translate.herokuapp.com/';
 } else {
     API_ENDPOINT = '/';
