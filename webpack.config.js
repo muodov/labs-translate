@@ -1,4 +1,3 @@
-var CleanWebpackPlugin = require('clean-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin');
 var webpack = require('webpack');
 var path = require('path');
@@ -13,7 +12,6 @@ let config = {
         pathinfo: true
     },
     plugins: [
-        new CleanWebpackPlugin('root/build'),
         new ManifestPlugin(),
         new webpack.optimize.ModuleConcatenationPlugin()
     ],
@@ -27,8 +25,9 @@ let config = {
                 {
                     loader: "css-loader", // translates CSS into CommonJS
                     options: {
-                        modules: true,
-                        localIdentName: '[name]__[local]___[hash:base64:5]'
+                        modules: {
+                            localIdentName: '[name]__[local]___[hash:base64:5]'
+                        },
                     }
                 },
                 {
