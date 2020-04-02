@@ -14,7 +14,12 @@ sentry = Sentry(application, dsn=SENTRY_DSN, logging=True, level=logging.INFO)
 sentry_handler = SentryHandler(sentry.client)
 sentry_handler.setLevel(logging.INFO)
 application.logger.addHandler(sentry_handler)
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.INFO)
+application.logger.addHandler(stream_handler)
+
 application.logger.setLevel(logging.INFO)
+
 
 ALLOWED_ORIGIN = os.getenv('ALLOWED_ORIGIN')
 
@@ -41,6 +46,7 @@ def hello():
         dest = request.args.get('dest')
     origin = request.headers.get('origin')
     if ALLOWED_ORIGIN and origin and not origin.endswith(ALLOWED_ORIGIN):
+        application.logger.warning('Origin not allowed: %s', origin)
         abort(403)
     if not word:
         abort(400)
